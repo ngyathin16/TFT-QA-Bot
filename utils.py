@@ -100,9 +100,10 @@ def create_search_index(data: Dict[str, Any]) -> Dict[str, List[str]]:
     # Index by name
     for item_type, items in data.items():
         for item in items:
-            name = item.get('name', '').lower()
-            if name:
-                search_index['by_name'][name] = item
+            name = item.get('name', '') or ''
+            name_lower = name.lower()
+            if name_lower:
+                search_index['by_name'][name_lower] = item
     
     # Index by type
     for item_type, items in data.items():
@@ -112,7 +113,9 @@ def create_search_index(data: Dict[str, Any]) -> Dict[str, List[str]]:
     for item_type, items in data.items():
         for item in items:
             # Extract keywords from name and description
-            text = f"{item.get('name', '')} {item.get('description', '')}"
+            name = item.get('name', '') or ''
+            description = item.get('description', '') or ''
+            text = f"{name} {description}"
             keywords = extract_tft_terms(text.lower())
             
             for keyword in keywords:

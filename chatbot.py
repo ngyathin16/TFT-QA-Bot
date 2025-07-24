@@ -34,19 +34,22 @@ Keep responses concise but informative, and feel free to use TFT terminology tha
             # Get relevant context from vector store
             context = self.vector_store.get_relevant_context(user_message, k=3)
             
-            # Build the conversation
-            messages = [
-                {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": f"Context information:\n{context}\n\nUser question: {user_message}"}
-            ]
+            # Build messages array - start with system prompt
+            messages = [{"role": "system", "content": self.system_prompt}]
             
-            # Add conversation history for context (last 5 exchanges)
-            for msg in self.conversation_history[-10:]:
-                messages.append(msg)
+            # Add conversation history FIRST (if any)
+            if self.conversation_history:
+                messages.extend(self.conversation_history[-6:])  # Last 3 exchanges
+            
+            # Add current user message LAST
+            messages.append({
+                "role": "user", 
+                "content": f"Context information:\n{context}\n\nUser question: {user_message}"
+            })
             
             # Get response from OpenAI
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",  # Can be upgraded to gpt-4 for better responses
+                model="gpt-3.5-turbo",
                 messages=messages,
                 max_tokens=500,
                 temperature=0.7
@@ -54,7 +57,7 @@ Keep responses concise but informative, and feel free to use TFT terminology tha
             
             assistant_response = response.choices[0].message.content
             
-            # Update conversation history
+            # Update conversation history AFTER getting response
             self.conversation_history.append({"role": "user", "content": user_message})
             self.conversation_history.append({"role": "assistant", "content": assistant_response})
             
@@ -113,12 +116,10 @@ class TFTChatbotManager:
                 logger.info("Loading existing index...")
                 self.vector_store.load_index(index_path)
             else:
-                logger.info("Building new index...")
-                from data_processor import TFTDataProcessor
+                logger.info("Building new index with placeholder data...")
                 
-                # Process data
-                processor = TFTDataProcessor()
-                documents = processor.create_documents()
+                # Temporary placeholder data until better source is found
+                documents = self.create_placeholder_documents()
                 
                 # Create embeddings and build index
                 embeddings = self.vector_store.create_embeddings(documents)
@@ -136,6 +137,33 @@ class TFTChatbotManager:
         except Exception as e:
             logger.error(f"Failed to initialize chatbot: {e}")
             return False
+    
+    def create_placeholder_documents(self):
+        """Create comprehensive TFT Set 15 documents from LoL_DDragon data source"""
+        try:
+            from lol_ddragon_scraper import LoLDDragonScraper
+            
+            # Use the LoL_DDragon scraper for comprehensive TFT Set 15 data
+            scraper = LoLDDragonScraper()
+            data = scraper.create_comprehensive_data()
+            documents = scraper.create_documents(data)
+            
+            logger.info(f"Created {len(documents)} documents from LoL_DDragon TFT Set 15 data")
+            return documents
+            
+        except Exception as e:
+            logger.error(f"Error creating LoL_DDragon documents: {e}")
+            # Fallback to basic placeholder until LoL_DDragon data is available (8/1/2025)
+            return [
+                {
+                    'content': 'TFT Set 15 is the latest set of Teamfight Tactics. LoL_DDragon data source will be available on 8/1/2025. This is a placeholder until then.',
+                    'metadata': {
+                        'type': 'placeholder',
+                        'source': 'placeholder_until_lol_ddragon',
+                        'note': 'LoL_DDragon data available 8/1/2025'
+                    }
+                }
+            ]
     
     def get_response(self, message: str) -> str:
         """Get a response from the chatbot"""

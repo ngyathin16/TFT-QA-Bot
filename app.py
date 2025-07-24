@@ -5,7 +5,11 @@ import logging
 from chatbot import TFTChatbotManager
 
 # Load environment variables
-load_dotenv()
+try:
+    load_dotenv()
+except Exception as e:
+    st.error(f"Warning: Could not load .env file: {e}")
+    st.info("Please make sure your .env file is properly formatted with UTF-8 encoding")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
