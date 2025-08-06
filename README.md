@@ -22,15 +22,27 @@ A comprehensive Q&A chatbot for Teamfight Tactics Set 15, helping players learn 
 - **LLM**: OpenAI GPT-3.5-turbo
 - **Styling**: Tailwind CSS
 
-## Setup Instructions
+## Quick Start (Recommended)
 
-### 1. Clone the Repository
-```bash
-git clone <your-repo-url>
-cd tft-qa-bot
+### Option 1: Automatic Setup (Windows)
+```powershell
+# Clone the repository
+git clone https://github.com/ngyathin16/TFT-QA-Bot.git
+cd TFT-QA-Bot
+
+# Run the complete fix script (handles everything)
+.\FINAL_FIX.ps1
 ```
 
-### 2. Create Virtual Environment
+### Option 2: Manual Setup
+
+#### 1. Clone the Repository
+```bash
+git clone https://github.com/ngyathin16/TFT-QA-Bot.git
+cd TFT-QA-Bot
+```
+
+#### 2. Create Virtual Environment
 ```bash
 python -m venv venv
 # On Windows
@@ -39,30 +51,26 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
+#### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
+npm install
 ```
 
-### 4. Set Up Environment Variables
+#### 4. Set Up Environment Variables
 Create a `.env` file in the root directory:
 ```bash
 OPENAI_API_KEY=your_openai_api_key_here
 ```
 
-### 5. Get OpenAI API Key
+#### 5. Get OpenAI API Key
 1. Go to [OpenAI Platform](https://platform.openai.com/)
 2. Sign up or log in
 3. Navigate to API Keys section
 4. Create a new API key
 5. Copy the key and add it to your `.env` file
 
-### 6. Install Frontend Dependencies
-```bash
-npm install
-```
-
-### 7. Run the Application
+#### 6. Run the Application
 
 **Start the Backend Server:**
 ```bash
@@ -81,7 +89,7 @@ The application will be available at:
 ## Project Structure
 
 ```
-tft-qa-bot/
+TFT-QA-Bot/
 ├── backend_server.py      # Flask API server
 ├── chatbot.py            # Chatbot logic and prompts
 ├── vector_store.py       # FAISS vector store operations
@@ -94,6 +102,9 @@ tft-qa-bot/
 ├── tft15_knowledge_base.json  # TFT Set 15 data
 ├── tft-*.json          # Raw TFT data files
 ├── .env                # Environment variables (create this)
+├── FINAL_FIX.ps1       # Complete fix script
+├── verify_fix.ps1      # Verification script
+├── TROUBLESHOOTING.md  # Troubleshooting guide
 └── README.md          # This file
 ```
 
@@ -101,8 +112,33 @@ tft-qa-bot/
 
 1. Start both the backend server and frontend application
 2. Open your browser to http://localhost:3000
-3. Ask questions about TFT Set 15 champions, traits, items, or mechanics
-4. Get instant, accurate answers based on official game data
+3. Press `Ctrl+Shift+R` for a hard refresh to clear any cached data
+4. Ask questions about TFT Set 15 champions, traits, items, or mechanics
+5. Get instant, accurate answers based on official game data
+
+## Troubleshooting
+
+If you encounter issues with the chatbot returning generic responses instead of specific champion names:
+
+1. **Run the complete fix script:**
+   ```powershell
+   .\FINAL_FIX.ps1
+   ```
+
+2. **Verify the fix:**
+   ```powershell
+   .\verify_fix.ps1
+   ```
+
+3. **Check the troubleshooting guide:**
+   - See `TROUBLESHOOTING.md` for detailed solutions
+
+## Available Scripts
+
+- `FINAL_FIX.ps1` - Complete environment reset and restart
+- `verify_fix.ps1` - Test if the chatbot is working correctly
+- `fix_chatbot.ps1` - Alternative complete fix
+- `force_restart.ps1` - Aggressive restart (if needed)
 
 ## Example Questions
 
