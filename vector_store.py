@@ -129,6 +129,14 @@ class TFTVectorStore:
         
         return context.strip()
     
+    def search_by_pattern(self, pattern: str) -> List[Dict]:
+        """Search for documents containing a specific pattern"""
+        matching_docs = []
+        for doc in self.documents:
+            if pattern.lower() in doc.get('content', '').lower():
+                matching_docs.append(doc)
+        return matching_docs
+    
     def index_exists(self, filepath: str) -> bool:
         """Check if index files exist"""
         return os.path.exists(f"{filepath}.faiss") and os.path.exists(f"{filepath}.pkl")
