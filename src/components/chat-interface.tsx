@@ -56,11 +56,14 @@ export function ChatInterface() {
     setIsLoading(true);
 
     try {
-      // Connect to Python backend
-      const response = await fetch("/api/chat", {
+      // Connect to Python backend with cache-busting timestamp
+      const timestamp = Date.now();
+      const response = await fetch(`/api/chat?t=${timestamp}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
         },
         body: JSON.stringify({ message: messageContent }),
       });
@@ -103,19 +106,33 @@ export function ChatInterface() {
     "What augments are available?",
   ];
 
+  const clearMessages = () => {
+    setMessages([]);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-zinc-50 dark:bg-zinc-900">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-700">
-        <div className="flex items-center space-x-2">
-          <Bot className="w-6 h-6 text-blue-600" />
-          <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
-            TFT Set 15 Q&A Bot
-          </h1>
-        </div>
-        <div className="text-sm text-zinc-500 dark:text-zinc-400">
-          {messages.length} messages
-        </div>
+                 <div className="flex items-center space-x-2">
+           <Bot className="w-6 h-6 text-blue-600" />
+           <h1 className="text-xl font-bold text-zinc-900 dark:text-white">
+             TFT Set 15 Q&A Bot
+           </h1>
+         </div>
+         <div className="flex items-center space-x-4">
+           <div className="text-sm text-zinc-500 dark:text-zinc-400">
+             {messages.length} messages
+           </div>
+           {messages.length > 0 && (
+             <button
+               onClick={clearMessages}
+               className="text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+             >
+               Clear Chat
+             </button>
+           )}
+         </div>
       </div>
 
       {/* Messages */}

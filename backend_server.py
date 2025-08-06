@@ -31,11 +31,19 @@ def initialize_chatbot():
             return False
         
         print("🔧 Initializing TFTChatbotManager...")
+        print("🚀 VERSION: Enhanced Search Enabled (v2.0)")
         chatbot_manager = TFTChatbotManager(openai_api_key)
         
         # Initialize the chatbot (this will load/create the vector store)
         print("🔧 Initializing vector store...")
         chatbot_manager.initialize(force_rebuild=False)
+        
+        # Verify enhanced search is available
+        if hasattr(chatbot_manager.chatbot, '_get_enhanced_context'):
+            print("✅ Enhanced search functionality: AVAILABLE")
+        else:
+            print("❌ Enhanced search functionality: MISSING")
+            return False
         
         print("✅ Chatbot initialized successfully!")
         return True
@@ -60,7 +68,13 @@ def chat():
         # Get response from your existing chatbot
         response = chatbot_manager.get_response(message)
         
-        return jsonify({'response': response})
+        # Add cache-busting headers to prevent browser caching
+        response_obj = jsonify({'response': response})
+        response_obj.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response_obj.headers['Pragma'] = 'no-cache'
+        response_obj.headers['Expires'] = '0'
+        
+        return response_obj
         
     except Exception as e:
         print(f"Error in chat endpoint: {e}")
@@ -99,6 +113,30 @@ def knowledge_base_info():
         })
     except Exception as e:
         return jsonify({'error': f'Could not load knowledge base info: {e}'}), 500
+
+@app.route('/api/test-enhanced-search', methods=['GET'])
+def test_enhanced_search():
+    """Test endpoint to verify enhanced search is working"""
+    try:
+        if not chatbot_manager:
+            return jsonify({'error': 'Chatbot not initialized'}), 500
+        
+        # Test the enhanced search functionality
+        test_query = "List all 2-cost champions"
+        context = chatbot_manager.chatbot._get_enhanced_context(test_query)
+        
+        # Check if it contains actual champion names
+        has_champion_names = any(name in context.lower() for name in ['janna', 'jhin', 'kai', 'katarina'])
+        
+        return jsonify({
+            'enhanced_search_available': hasattr(chatbot_manager.chatbot, '_get_enhanced_context'),
+            'test_query': test_query,
+            'context_preview': context[:200] + "..." if len(context) > 200 else context,
+            'contains_champion_names': has_champion_names,
+            'status': 'working' if has_champion_names else 'not_working'
+        })
+    except Exception as e:
+        return jsonify({'error': f'Test failed: {e}'}), 500
 
 if __name__ == '__main__':
     print("🚀 Starting TFT QA Bot Backend Server...")
