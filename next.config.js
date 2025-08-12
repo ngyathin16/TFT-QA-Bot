@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed experimental.appDir as it's no longer needed in Next.js 14
+  experimental: {},
+  env: {
+    BACKEND_URL: process.env.BACKEND_URL,
+  },
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig

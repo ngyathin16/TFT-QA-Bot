@@ -1,0 +1,16 @@
+# Render Blueprint for TFT QA Bot Backend
+
+services:
+  - type: web
+    name: tft-qa-bot-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend_server.py
+    autoDeploy: true
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: FLASK_DEBUG
+        value: "false"
+

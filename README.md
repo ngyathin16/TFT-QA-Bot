@@ -74,7 +74,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 
 **Start the Backend Server:**
 ```bash
-python backend_server.py
+PORT=5000 python backend_server.py
 ```
 
 **Start the Frontend (in a new terminal):**
@@ -85,6 +85,11 @@ npm run dev
 The application will be available at:
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:5000
+
+## Deployment (Free Tier)
+
+- Frontend: Deploy to Vercel. Set `BACKEND_URL` environment variable to your backend URL.
+- Backend: Deploy to Render (Free Web Service). Add env var `OPENAI_API_KEY`, and ensure `Start Command` is `python backend_server.py`. Render sets `PORT` automatically.
 
 ## Project Structure
 
