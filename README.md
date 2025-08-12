@@ -4,7 +4,7 @@ A comprehensive Q&A chatbot for Teamfight Tactics Set 15, helping players learn 
 
 ## Live demo
 
-- Frontend: [tft-qa-bot.vercel.app](https://tft-qa-bot.vercel.app)  ← replace with your Vercel URL
+- Frontend: [tft-qa-bot.vercel.app](https://tft-qa-bot.vercel.app)
 - Backend health: [`https://<your-render-backend>/api/health`](https://<your-render-backend>/api/health)
 - Enhanced search test: [`https://<your-render-backend>/api/test-enhanced-search`](https://<your-render-backend>/api/test-enhanced-search)
 
