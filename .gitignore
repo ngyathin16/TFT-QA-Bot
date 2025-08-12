@@ -21,7 +21,10 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+#/lib/  # Only ignore root-level lib if needed. Do NOT ignore src/lib
+# Keep src/lib tracked
+!src/lib/
+!src/lib/**
 lib64/
 parts/
 sdist/
