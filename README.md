@@ -5,10 +5,8 @@ A comprehensive Q&A chatbot for Teamfight Tactics Set 15, helping players learn 
 ## Live demo
 
 - Frontend: [tft-qa-bot.vercel.app](https://tft-qa-bot.vercel.app)
-- Backend health: [`https://<your-render-backend>/api/health`](https://<your-render-backend>/api/health)
-- Enhanced search test: [`https://<your-render-backend>/api/test-enhanced-search`](https://<your-render-backend>/api/test-enhanced-search)
-
-Note: The frontend relies on the backend. If you fork this repo, set the Vercel env var `BACKEND_URL` to your Render backend URL.
+- Backend health: [`https://https://tft-qa-bot.onrender.com/api/health`](https://tft-qa-bot.onrender.comapi/health)
+- Enhanced search test: [`https://https://tft-qa-bot.onrender.com/api/test-enhanced-search`](https://tft-qa-bot.onrender.com/api/test-enhanced-search)
 
 ## Features
 
