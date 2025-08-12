@@ -75,6 +75,10 @@ embeddings/
 *.faiss
 *.pkl
 *.pickle
+
+# Allow prebuilt FAISS index files to be tracked
+!tft15_index.faiss
+!tft15_index.pkl
 logs/
 
 # Node.js
