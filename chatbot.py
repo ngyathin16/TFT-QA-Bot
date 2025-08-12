@@ -91,19 +91,56 @@ Keep responses concise and only include information that is directly supported b
     def _get_enhanced_context(self, user_message: str) -> str:
         """Get enhanced context for tier-based queries"""
         message_lower = user_message.lower()
-        
+
         # Check if this is a tier-based query
         tier_pattern = None
-        if any(phrase in message_lower for phrase in ["1-cost", "tier 1", "cost 1"]):
-            tier_pattern = "Tier: 1"
-        elif any(phrase in message_lower for phrase in ["2-cost", "tier 2", "cost 2"]):
-            tier_pattern = "Tier: 2"
-        elif any(phrase in message_lower for phrase in ["3-cost", "tier 3", "cost 3"]):
-            tier_pattern = "Tier: 3"
-        elif any(phrase in message_lower for phrase in ["4-cost", "tier 4", "cost 4"]):
-            tier_pattern = "Tier: 4"
-        elif any(phrase in message_lower for phrase in ["5-cost", "tier 5", "cost 5"]):
-            tier_pattern = "Tier: 5"
+
+        # Robust parsing of tier number from message (supports "2 cost", "2-cost", "tier 2", "two cost", etc.)
+        try:
+            import re
+
+            word_to_num = {
+                "one": 1,
+                "two": 2,
+                "three": 3,
+                "four": 4,
+                "five": 5,
+            }
+
+            # Patterns capture numeric or word-based tier references
+            regex_patterns = [
+                r"\b([1-5])\s*-?\s*costs?\b",
+                r"\bcosts?\s*-?\s*([1-5])\b",
+                r"\btier\s*-?\s*([1-5])\b",
+                r"\b(one|two|three|four|five)\s*-?\s*costs?\b",
+                r"\btier\s*-?\s*(one|two|three|four|five)\b",
+            ]
+
+            detected_tier_number = None
+            for pattern in regex_patterns:
+                match = re.search(pattern, message_lower)
+                if match:
+                    value = match.group(1)
+                    if value.isdigit():
+                        detected_tier_number = int(value)
+                    else:
+                        detected_tier_number = word_to_num.get(value)
+                    break
+
+            if detected_tier_number in {1, 2, 3, 4, 5}:
+                tier_pattern = f"Tier: {detected_tier_number}"
+        except Exception:
+            # Fall back to simple phrase checks if regex parsing fails for any reason
+            if any(phrase in message_lower for phrase in ["1-cost", "tier 1", "cost 1", "1 cost"]):
+                tier_pattern = "Tier: 1"
+            elif any(phrase in message_lower for phrase in ["2-cost", "tier 2", "cost 2", "2 cost"]):
+                tier_pattern = "Tier: 2"
+            elif any(phrase in message_lower for phrase in ["3-cost", "tier 3", "cost 3", "3 cost"]):
+                tier_pattern = "Tier: 3"
+            elif any(phrase in message_lower for phrase in ["4-cost", "tier 4", "cost 4", "4 cost"]):
+                tier_pattern = "Tier: 4"
+            elif any(phrase in message_lower for phrase in ["5-cost", "tier 5", "cost 5", "5 cost"]):
+                tier_pattern = "Tier: 5"
         
         if tier_pattern:
             # For tier-based queries, use pattern search to find ALL champions of that tier
